@@ -1,0 +1,7 @@
+version: "2"
+domain: i.keisukeyamashita.com
+repo: github.com/KeisukeYamashita/i
+resources:
+- group: icontroller
+  version: v1alpha1
+  kind: Eye
