@@ -21,6 +21,8 @@ import (
 	"sync"
 
 	"github.com/go-logr/logr"
+	"github.com/k0kubun/pp"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
@@ -70,6 +72,22 @@ func (r *EyeReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, nil
 	}
 
+	eye2 := eye.DeepCopy()
+	eye2.Spec.ExpireAt = "hoho"
+
+	rs := &corev1.PodList{}
+	if err := r.List(ctx, rs); err != nil {
+		log.Error(err, "unable to fetch pods")
+		return ctrl.Result{}, nil
+	}
+
+	pp.Println(len(rs.Items))
+
+	if err := r.Update(ctx, eye2); err != nil {
+		log.Error(err, "unable to update eye")
+	}
+
+	log.V(0).Info("update eye resource")
 	return ctrl.Result{}, nil
 }
 

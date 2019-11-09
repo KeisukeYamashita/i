@@ -4,4 +4,4 @@ metadata:
   name: eye-sample
 spec:
   # Add fields here
-  expiredAt: "2018-10-22"
+  expiredAt: "2018-10-28"
