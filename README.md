@@ -1,7 +1,7 @@
 # i
 
 <br />
-<p align="center"><a href="#" target="_blank" rel="noopener noreferrer"><img width="90%"src="./_image/logo.gif" alt="WIAS"></a></p>
+<p align="center"><a href="#" target="_blank" rel="noopener noreferrer"><img width="90%"src="./_image/logo.gif" alt="eye"></a></p>
 <h1 align="center">i</h1>
 <br />
 
@@ -25,6 +25,12 @@
 *NOTE: This is not for production usage. It is under PoC.*
 
 ## Design
+
+> Every pod will be supervised by the eye...
+
+<br />
+<p align="center"><a href="#" target="_blank" rel="noopener noreferrer"><img width="70%"src="./_image/design.gif" alt="eye"></a></p>
+<br />
 
 Here, I will explain the breif design.
 
@@ -109,7 +115,6 @@ Copyright 2019 The i Authors. Biko is released under the Apache License 2.0.
 ## Author
 
 * [KeisukeYamashita](https://github.com/KeisukeYamashita)
-
 
 <!-- badge links -->
 
