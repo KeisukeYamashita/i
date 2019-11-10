@@ -26,7 +26,7 @@
 
 ## Design
 
-Here, I will explain the breif design.
+Here, I will explain the brief design.
 
 ### Architecture
 
