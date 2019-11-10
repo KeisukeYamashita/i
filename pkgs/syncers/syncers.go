@@ -7,8 +7,8 @@ import (
 
 	"github.com/KeisukeYamashita/i/api/v1alpha1"
 	"github.com/KeisukeYamashita/i/pkgs/clock"
+	"github.com/KeisukeYamashita/i/pkgs/logging"
 	"github.com/KeisukeYamashita/i/pkgs/slack"
-	"github.com/k0kubun/pp"
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
@@ -48,7 +48,8 @@ func NewSyncer(client client.Client, eye *v1alpha1.Eye, clock clock.Clock, url *
 
 // Sync ...
 func (s *syncer) Sync(ctx context.Context) {
-	ticker := time.NewTicker(time.Duration(3 * time.Second))
+	log := logging.FromContext(ctx)
+	ticker := time.NewTicker(time.Duration(1 * time.Minute))
 	defer ticker.Stop()
 
 	for {
@@ -76,13 +77,15 @@ func (s *syncer) Sync(ctx context.Context) {
 			}
 
 			if len(invalidPods) != 0 {
-				msg := slack.NewInvalidPodsMessage(invalidPods)
-				slackClient := slack.NewClient(s.HookURL)
-				slackClient.PostMessage(msg)
-				continue
+				if s.HookURL != nil {
+					msg := slack.NewInvalidPodsMessage(invalidPods)
+					slackClient := slack.NewClient(s.HookURL)
+					slackClient.PostMessage(msg)
+					continue
+				}
 			}
 		case <-ctx.Done():
-			pp.Println(ctx.Err())
+			log.V(1).Info("stopping syncer with cancel", ctx.Err())
 			return
 		}
 	}
@@ -90,7 +93,10 @@ func (s *syncer) Sync(ctx context.Context) {
 
 func (s *syncer) getPods(ctx context.Context) ([]corev1.Pod, error) {
 	pl := &corev1.PodList{}
-	if err := s.client.List(ctx, pl); err != nil {
+	labelSelector := &client.ListOptions{
+		Namespace: "default",
+	}
+	if err := s.client.List(ctx, pl, labelSelector); err != nil {
 		return nil, err
 	}
 
