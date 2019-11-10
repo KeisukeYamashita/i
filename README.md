@@ -5,7 +5,22 @@
 <h1 align="center">i</h1>
 <br />
 
->  i is an Operator for restarting old pod policies management.
+>  i is an Kubernetes Operator for restarting old pod policies management.
+
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![Go][go-badge]][go]
+[![License][license-badge]][license]
+
+[![GoDoc][godoc-badge]][godoc]
+[![GolangCI][golangci-badge]][golangci]
+[![Go Report Card][go-report-card-badge]][go-report-card]
+[![CodeFactor][codefactor-badge]][codefactor]
+[![Dependabot][dependabot-badge]][dependabot]
+[![Job Status](https://inspecode.rocro.com/badges/github.com/KeisukeYamashita/i/status?token=SGqr7pQjbMTQuMDLOPk_rvq_hGeF_hoLj_B7tbRKSXg)](https://inspecode.rocro.com/jobs/github.com/KeisukeYamashita/i/latest?completed=true)
+[![Report](https://inspecode.rocro.com/badges/github.com/KeisukeYamashita/i/report?token=SGqr7pQjbMTQuMDLOPk_rvq_hGeF_hoLj_B7tbRKSXg&branch=master)](https://inspecode.rocro.com/reports/github.com/KeisukeYamashita/i/branch/master/summary)
+
+[![DeepSource][deepsource-badge]][deepsource]
+
 
 *NOTE: This is not for production usage. It is under PoC.*
 
@@ -30,7 +45,7 @@ First, you will need to install this CRD.
 Run this command.
 
 ```terminal
-$ curl "" | kubectl apply -f 
+$ kustomize build "https://raw.githubusercontent.com/KeisukeYamashita/i/master/config/crd" | kubectl apply -f 
 ```
 
 Then, check crd status.
@@ -39,7 +54,7 @@ Then, check crd status.
 $ kubectl get crd
 ```
 
-### Create secret for slack notification
+### Create secret for slack notification: Optional
 
 Create a secret.
 
@@ -47,7 +62,7 @@ Create a secret.
 apiVersion:
 Kind: Secret
 metadata:
-    app: slack-channel-1
+    app: YOUR_SECRET_NAME
 data:
     SLACK_URL: "https://hook.xxx.xxx"
 ```
@@ -61,6 +76,7 @@ $ kubectl apply -f slack-channel-1.yml
 ### Eye resource
 
 Create a custom resource. You can create many rules.
+Note that `spec.secrectRef` is optional.
 
 ```yaml
 apiVersion: i.keisukeyamashita.com/alphav1
@@ -86,6 +102,32 @@ Check you status.
 $ kubectl get eye
 ```
 
+## License
+
+Copyright 2019 The i Authors. Biko is released under the Apache License 2.0.
+
 ## Author
 
 * [KeisukeYamashita](https://github.com/KeisukeYamashita)
+
+
+<!-- badge links -->
+
+[go]: https://golang.org/dl
+[license]: LICENSE
+[godoc]: https://godoc.org/github.com/KeisukeYamashita/i
+[go-report-card]: https://goreportcard.com/report/github.com/KeisukeYamashita/i
+[golangci]: https://golangci.com/r/github.com/KeisukeYamashita/i
+[codefactor]: https://www.codefactor.io/repository/github/KeisukeYamashita/i
+[dependabot]: https://dependabot.com 
+[deepsource]: https://deepsource.io/gh/KeisukeYamashita/i/?ref=repository-badge
+
+[github-actions-badge]: https://github.com/KeisukeYamashita/i/workflows/Main%20Workflow/badge.svg
+[go-badge]: https://img.shields.io/badge/Go-1.13-blue
+[license-badge]: https://img.shields.io/badge/license-Apache%202.0-%23E93424
+[godoc-badge]: https://img.shields.io/badge/godoc.org-reference-blue.svg
+[go-report-card-badge]: https://goreportcard.com/badge/github.com/KeisukeYamashita/i
+[golangci-badge]: https://golangci.com/badges/github.com/KeisukeYamashita/i.svg
+[codefactor-badge]: https://www.codefactor.io/repository/github/KeisukeYamashita/i/badge
+[dependabot-badge]: https://badgen.net/badge/icon/Dependabot?icon=dependabot&label&color=blue
+[deepsource-badge]: https://static.deepsource.io/deepsource-badge-light.svg
