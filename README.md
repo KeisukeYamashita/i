@@ -1,10 +1,12 @@
 # i
 
-> i is an Operator for checking due date for policy check.
+>  i is an Operator for restarting old pod policies.
 
 This is not for production usage. It is under PoC.
 
 ## Design
+
+Here, I will explain the breif design.
 
 ### Architecture
 
