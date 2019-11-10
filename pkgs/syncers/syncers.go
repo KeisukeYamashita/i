@@ -11,6 +11,7 @@ import (
 	"github.com/KeisukeYamashita/i/pkgs/slack"
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -25,13 +26,21 @@ type syncer struct {
 	lifetime   time.Duration
 	clock      clock.Clock
 	HookURL    *url.URL
+	nn         types.NamespacedName
 	CancelFunc context.CancelFunc
 }
 
 var _ Syncer = (*syncer)(nil)
 
 // NewSyncer ...
-func NewSyncer(client client.Client, eye *v1alpha1.Eye, clock clock.Clock, url *url.URL, cancelFunc context.CancelFunc) (Syncer, error) {
+func NewSyncer(
+	client client.Client,
+	eye *v1alpha1.Eye,
+	nn types.NamespacedName,
+	clock clock.Clock,
+	url *url.URL,
+	cancelFunc context.CancelFunc,
+) (Syncer, error) {
 	d, err := time.ParseDuration(eye.Spec.Lifetime)
 	if err != nil {
 		return nil, err
@@ -41,6 +50,7 @@ func NewSyncer(client client.Client, eye *v1alpha1.Eye, clock clock.Clock, url *
 		client:     client,
 		clock:      clock,
 		lifetime:   d,
+		nn:         nn,
 		HookURL:    &urlCopy,
 		CancelFunc: cancelFunc,
 	}, nil
@@ -49,7 +59,7 @@ func NewSyncer(client client.Client, eye *v1alpha1.Eye, clock clock.Clock, url *
 // Sync ...
 func (s *syncer) Sync(ctx context.Context) {
 	log := logging.FromContext(ctx)
-	ticker := time.NewTicker(time.Duration(1 * time.Minute))
+	ticker := time.NewTicker(time.Duration(1 * time.Second))
 	defer ticker.Stop()
 
 	for {
@@ -93,10 +103,7 @@ func (s *syncer) Sync(ctx context.Context) {
 
 func (s *syncer) getPods(ctx context.Context) ([]corev1.Pod, error) {
 	pl := &corev1.PodList{}
-	labelSelector := &client.ListOptions{
-		Namespace: "default",
-	}
-	if err := s.client.List(ctx, pl, labelSelector); err != nil {
+	if err := s.client.List(ctx, pl); err != nil {
 		return nil, err
 	}
 

@@ -109,7 +109,7 @@ func (r *EyeReconciler) startSyncer(ctx context.Context, c client.Client, nn typ
 	log := logging.FromContext(ctx)
 	log.V(1).Info("adding new syncer")
 	ctx, cancel := context.WithCancel(ctx)
-	s, err := syncers.NewSyncer(c, eye, r.Clock, r.HookURL, cancel)
+	s, err := syncers.NewSyncer(c, eye, nn, r.Clock, r.HookURL, cancel)
 	if err != nil {
 		return err
 	}
