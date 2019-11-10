@@ -26,6 +26,7 @@ type syncer struct {
 	lifetime   time.Duration
 	clock      clock.Clock
 	HookURL    *url.URL
+	eye        *v1alpha1.Eye
 	nn         types.NamespacedName
 	CancelFunc context.CancelFunc
 }
@@ -50,6 +51,7 @@ func NewSyncer(
 		client:     client,
 		clock:      clock,
 		lifetime:   d,
+		eye:        eye,
 		nn:         nn,
 		HookURL:    &urlCopy,
 		CancelFunc: cancelFunc,
@@ -88,7 +90,7 @@ func (s *syncer) Sync(ctx context.Context) {
 
 			if len(invalidPods) != 0 {
 				if s.HookURL != nil {
-					msg := slack.NewInvalidPodsMessage(invalidPods)
+					msg := slack.NewInvalidPodsMessage(s.eye, s.nn, invalidPods)
 					slackClient := slack.NewClient(s.HookURL)
 					slackClient.PostMessage(msg)
 					continue

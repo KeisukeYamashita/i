@@ -7,8 +7,10 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/KeisukeYamashita/i/api/v1alpha1"
 	"github.com/KeisukeYamashita/i/pkgs/pointer"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 // Message ...
@@ -89,12 +91,12 @@ func (c *client) PostMessage(msg *Message) error {
 }
 
 // NewInvalidPodsMessage ...
-func NewInvalidPodsMessage(pods []corev1.Pod) *Message {
+func NewInvalidPodsMessage(eye *v1alpha1.Eye, nn types.NamespacedName, pods []corev1.Pod) *Message {
 	text := "Deleted old pods"
 	attachments := []Attachment{}
 
 	for _, pod := range pods {
-		fields := GetPodFields(&pod)
+		fields := GetPodFields(eye, &pod, nn.Namespace)
 		attachment := Attachment{
 			Fields: fields,
 		}
@@ -104,13 +106,19 @@ func NewInvalidPodsMessage(pods []corev1.Pod) *Message {
 }
 
 // GetPodFields ...
-func GetPodFields(pod *corev1.Pod) (fields []*Field) {
+func GetPodFields(eye *v1alpha1.Eye, pod *corev1.Pod, ns string) (fields []*Field) {
+	eyeField := newShortField("Eye name", eye.Name)
+	fields = append(fields, eyeField)
+	namespaceField := newShortField("Eye namespace", ns)
 	nameField := NewField("Name", pod.ObjectMeta.Name, nil)
 	fields = append(fields, nameField)
+	fields = append(fields, namespaceField)
 	hostIPField := newShortField("Host IP", pod.Status.HostIP)
 	fields = append(fields, hostIPField)
 	podIPField := newShortField("Pod IP", pod.Status.PodIP)
 	fields = append(fields, podIPField)
+	podNamespaceField := newShortField("Namespace", pod.Namespace)
+	fields = append(fields, podNamespaceField)
 	return fields
 }
 
