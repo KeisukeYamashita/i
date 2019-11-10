@@ -1,8 +1,13 @@
 # i
 
->  i is an Operator for restarting old pod policies.
+<br />
+<p align="center"><a href="#" target="_blank" rel="noopener noreferrer"><img width="90%"src="./_image/logo.gif" alt="WIAS"></a></p>
+<h1 align="center">i</h1>
+<br />
 
-This is not for production usage. It is under PoC.
+>  i is an Operator for restarting old pod policies management.
+
+*NOTE: This is not for production usage. It is under PoC.*
 
 ## Design
 
