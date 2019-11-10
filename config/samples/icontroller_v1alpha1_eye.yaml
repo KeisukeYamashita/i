@@ -1,0 +1,7 @@
+apiVersion: icontroller.i.keisukeyamashita.com/v1alpha1
+kind: Eye
+metadata:
+  name: eye-sample
+spec:
+  # Add fields here
+  lifetime: "10s"

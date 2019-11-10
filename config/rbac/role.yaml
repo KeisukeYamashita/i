@@ -1,0 +1,27 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - icontroller.i.keisukeyamashita.com
+  resources:
+  - eyes
+  verbs:
+  - create
+  - get
+  - list
+  - patchwatch
+  - update
+  - watch
+- apiGroups:
+  - icontroller.i.keisukeyamashita.com
+  resources:
+  - eyes/status
+  verbs:
+  - get
+  - patch
+  - update
