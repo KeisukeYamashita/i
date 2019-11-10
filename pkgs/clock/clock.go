@@ -8,18 +8,19 @@ type Clock interface {
 }
 
 type clock struct {
-	CurrentTime time.Time
+	CreatedAt time.Time
 }
 
 var _ Clock = (*clock)(nil)
 
+// NewClock ...
 func NewClock(currentTime time.Time) Clock {
 	return &clock{
-		CurrentTime: currentTime,
+		CreatedAt: currentTime,
 	}
 }
 
 // Now ...
 func (c *clock) Now() time.Time {
-	return c.CurrentTime
+	return time.Now()
 }

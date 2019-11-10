@@ -2,6 +2,7 @@ package syncers
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"time"
 
@@ -67,6 +68,7 @@ func (s *syncer) Sync(ctx context.Context) {
 	for {
 		select {
 		case <-ticker.C:
+			log.V(0).Info("trigger check", "name", s.eye.Name, "lifetime", s.eye.Spec.Lifetime)
 			eg, _ := errgroup.WithContext(ctx)
 			pods := []corev1.Pod{}
 			eg.Go(func() error {
@@ -84,8 +86,22 @@ func (s *syncer) Sync(ctx context.Context) {
 			invalidPods := []corev1.Pod{}
 			for _, pod := range pods {
 				if valid := s.validPod(&pod); valid {
+					pod := pod
 					invalidPods = append(invalidPods, pod)
+					eg.Go(func() error {
+						err := s.deletePod(ctx, &pod)
+						if err != nil {
+							log.Error(err, fmt.Sprintf("deleted pod %s", pod.Name))
+							return err
+						}
+						log.V(0).Info("delete pod", "pod", pod.Name)
+						return nil
+					})
 				}
+			}
+
+			if err := eg.Wait(); err != nil {
+				return
 			}
 
 			if len(invalidPods) != 0 {
@@ -93,7 +109,6 @@ func (s *syncer) Sync(ctx context.Context) {
 					msg := slack.NewInvalidPodsMessage(s.eye, s.nn, invalidPods)
 					slackClient := slack.NewClient(s.HookURL)
 					slackClient.PostMessage(msg)
-					continue
 				}
 			}
 		case <-ctx.Done():
@@ -117,4 +132,12 @@ func (s *syncer) validPod(pod *corev1.Pod) bool {
 	now := s.clock.Now()
 	expiresAt := pod.ObjectMeta.CreationTimestamp.Add(s.lifetime)
 	return now.After(expiresAt)
+}
+
+func (s *syncer) deletePod(ctx context.Context, pod *corev1.Pod) error {
+	if err := s.client.Delete(ctx, pod); err != nil {
+		return err
+	}
+
+	return nil
 }
