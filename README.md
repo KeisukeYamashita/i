@@ -7,13 +7,18 @@
 
 >  i is an Kubernetes Operator for restarting old pod policies management.
 
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![Go][go-badge]][go]
 [![License][license-badge]][license]
+
 [![GoDoc][godoc-badge]][godoc]
 [![GolangCI][golangci-badge]][golangci]
 [![Go Report Card][go-report-card-badge]][go-report-card]
 [![CodeFactor][codefactor-badge]][codefactor]
 [![Dependabot][dependabot-badge]][dependabot]
+[![Job Status](https://inspecode.rocro.com/badges/github.com/KeisukeYamashita/i/status?token=SGqr7pQjbMTQuMDLOPk_rvq_hGeF_hoLj_B7tbRKSXg)](https://inspecode.rocro.com/jobs/github.com/KeisukeYamashita/i/latest?completed=true)
+[![Report](https://inspecode.rocro.com/badges/github.com/KeisukeYamashita/i/report?token=SGqr7pQjbMTQuMDLOPk_rvq_hGeF_hoLj_B7tbRKSXg&branch=master)](https://inspecode.rocro.com/reports/github.com/KeisukeYamashita/i/branch/master/summary)
+
 [![DeepSource][deepsource-badge]][deepsource]
 
 
