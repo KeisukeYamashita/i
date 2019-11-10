@@ -10,8 +10,8 @@ require (
 	github.com/go-logr/logr v0.1.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/k0kubun/pp v3.0.1+incompatible
-	github.com/onsi/ginkgo v1.8.0
-	github.com/onsi/gomega v1.5.0
+	github.com/onsi/gomega v1.7.1
+	github.com/onsi/ginkgo v1.10.3
 	github.com/prometheus/common v0.0.0-20180801064454-c7de2306084e
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	go.etcd.io/etcd v3.3.17+incompatible
