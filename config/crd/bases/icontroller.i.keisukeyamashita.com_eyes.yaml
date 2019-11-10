@@ -36,8 +36,17 @@ spec:
               description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
                 Important: Run "make" to regenerate code after modifying this file'
               type: string
+            secretRef:
+              description: SecretRef ...
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+              type: object
           required:
           - lifetime
+          - secretRef
           type: object
         status:
           description: EyeStatus defines the observed state of Eye

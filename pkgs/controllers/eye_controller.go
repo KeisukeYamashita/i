@@ -18,10 +18,13 @@ package controllers
 
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"sync"
 	"time"
 
 	"github.com/go-logr/logr"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
@@ -41,6 +44,7 @@ type EyeReconciler struct {
 	Log      logr.Logger
 	Schema   *runtime.Scheme
 	Recorder record.EventRecorder
+	HookURL  *url.URL
 
 	syncers map[types.NamespacedName]syncers.Syncer
 	mu      sync.RWMutex
@@ -66,6 +70,13 @@ func (r *EyeReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	nn := req.NamespacedName
 	ctx := context.Background()
 	log := r.Log.WithValues("eye", nn)
+	url, err := r.GetSecret(ctx, &nn)
+	if err != nil {
+		r.Log.Error(err, "secret not found")
+	}
+	if url != nil {
+		r.HookURL = url
+	}
 
 	var eye v1alpha1.Eye
 	r.Log.Info("fetching eye object")
@@ -98,7 +109,7 @@ func (r *EyeReconciler) startSyncer(ctx context.Context, c client.Client, nn typ
 	log := logging.FromContext(ctx)
 	log.V(1).Info("adding new syncer")
 	ctx, cancel := context.WithCancel(ctx)
-	s, err := syncers.NewSyncer(c, eye, r.Clock, cancel)
+	s, err := syncers.NewSyncer(c, eye, r.Clock, r.HookURL, cancel)
 	if err != nil {
 		return err
 	}
@@ -109,4 +120,28 @@ func (r *EyeReconciler) startSyncer(ctx context.Context, c client.Client, nn typ
 
 	log.V(1).Info("add new syncer")
 	return nil
+}
+
+// GetSecret ...
+func (r *EyeReconciler) GetSecret(ctx context.Context, nn *types.NamespacedName) (*url.URL, error) {
+	secret := &corev1.Secret{}
+
+	// Copy types.NamedSpaces
+	nn2 := *nn
+	nn2.Name = "slack-url"
+	if err := r.Client.Get(ctx, nn2, secret); err != nil {
+		return nil, err
+	}
+
+	data, ok := secret.Data["SLACK_URL"]
+	if !ok {
+		return nil, fmt.Errorf("data with SLACK_URL key not found")
+	}
+
+	url, err := url.Parse(string(data))
+	if err != nil {
+		return nil, err
+	}
+
+	return url, nil
 }

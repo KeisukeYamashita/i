@@ -2,10 +2,12 @@ package syncers
 
 import (
 	"context"
+	"net/url"
 	"time"
 
 	"github.com/KeisukeYamashita/i/api/v1alpha1"
 	"github.com/KeisukeYamashita/i/pkgs/clock"
+	"github.com/KeisukeYamashita/i/pkgs/slack"
 	"github.com/k0kubun/pp"
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
@@ -22,21 +24,24 @@ type syncer struct {
 	client     client.Client
 	lifetime   time.Duration
 	clock      clock.Clock
+	HookURL    *url.URL
 	CancelFunc context.CancelFunc
 }
 
 var _ Syncer = (*syncer)(nil)
 
 // NewSyncer ...
-func NewSyncer(client client.Client, eye *v1alpha1.Eye, clock clock.Clock, cancelFunc context.CancelFunc) (Syncer, error) {
+func NewSyncer(client client.Client, eye *v1alpha1.Eye, clock clock.Clock, url *url.URL, cancelFunc context.CancelFunc) (Syncer, error) {
 	d, err := time.ParseDuration(eye.Spec.Lifetime)
 	if err != nil {
 		return nil, err
 	}
+	urlCopy := *url
 	return &syncer{
 		client:     client,
 		clock:      clock,
 		lifetime:   d,
+		HookURL:    &urlCopy,
 		CancelFunc: cancelFunc,
 	}, nil
 }
@@ -64,15 +69,18 @@ func (s *syncer) Sync(ctx context.Context) {
 			}
 
 			invalidPods := []corev1.Pod{}
-
 			for _, pod := range pods {
 				if valid := s.validPod(&pod); valid {
 					invalidPods = append(invalidPods, pod)
 				}
 			}
 
-			pp.Println(len(invalidPods))
-
+			if len(invalidPods) != 0 {
+				msg := slack.NewInvalidPodsMessage(invalidPods)
+				slackClient := slack.NewClient(s.HookURL)
+				slackClient.PostMessage(msg)
+				continue
+			}
 		case <-ctx.Done():
 			pp.Println(ctx.Err())
 			return
@@ -93,5 +101,5 @@ func (s *syncer) getPods(ctx context.Context) ([]corev1.Pod, error) {
 func (s *syncer) validPod(pod *corev1.Pod) bool {
 	now := s.clock.Now()
 	expiresAt := pod.ObjectMeta.CreationTimestamp.Add(s.lifetime)
-	return expiresAt.After(now)
+	return now.After(expiresAt)
 }
