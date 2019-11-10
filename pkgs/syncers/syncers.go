@@ -47,14 +47,13 @@ func NewSyncer(
 	if err != nil {
 		return nil, err
 	}
-	urlCopy := *url
 	return &syncer{
 		client:     client,
 		clock:      clock,
 		lifetime:   d,
 		eye:        eye,
 		nn:         nn,
-		HookURL:    &urlCopy,
+		HookURL:    url,
 		CancelFunc: cancelFunc,
 	}, nil
 }
