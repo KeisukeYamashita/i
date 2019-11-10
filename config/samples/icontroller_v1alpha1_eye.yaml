@@ -4,6 +4,6 @@ metadata:
   name: eye-sample
 spec:
   # Add fields here
-  lifetime: "10s"
+  lifetime: "1m"
   secretRef:
     name: slack-url

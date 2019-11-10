@@ -18,7 +18,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"sync"
 	"time"
@@ -126,7 +125,6 @@ func (r *EyeReconciler) startSyncer(ctx context.Context, c client.Client, nn typ
 // GetSecret ...
 func (r *EyeReconciler) GetSecret(ctx context.Context, name string, nn *types.NamespacedName) (*url.URL, error) {
 	secret := &corev1.Secret{}
-
 	// Copy types.NamedSpaces
 	nn2 := *nn
 	nn2.Name = name
@@ -136,7 +134,7 @@ func (r *EyeReconciler) GetSecret(ctx context.Context, name string, nn *types.Na
 
 	data, ok := secret.Data["SLACK_URL"]
 	if !ok {
-		return nil, fmt.Errorf("data with SLACK_URL key not found")
+		return nil, nil
 	}
 
 	url, err := url.Parse(string(data))

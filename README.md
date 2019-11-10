@@ -41,7 +41,8 @@ apiVersion:
 Kind: Secret
 metadata:
     app: slack-channel-1
-
+data:
+    SLACK_URL: "https://hook.xxx.xxx"
 ```
 
 And then apply.
@@ -62,6 +63,8 @@ metadata:
     msg: "I see you"
 spec:
     lifetime: "100m"
+    secretRef:
+        name: YOUR_SECRET_NAME
 ```
 
 Then apply your resource.
