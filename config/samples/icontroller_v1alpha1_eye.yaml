@@ -5,3 +5,5 @@ metadata:
 spec:
   # Add fields here
   lifetime: "10s"
+  secretRef:
+    name: slack-url

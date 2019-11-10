@@ -70,19 +70,20 @@ func (r *EyeReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	nn := req.NamespacedName
 	ctx := context.Background()
 	log := r.Log.WithValues("eye", nn)
-	url, err := r.GetSecret(ctx, &nn)
-	if err != nil {
-		r.Log.Error(err, "secret not found")
-	}
-	if url != nil {
-		r.HookURL = url
-	}
 
 	var eye v1alpha1.Eye
 	r.Log.Info("fetching eye object")
 	if err := r.Get(ctx, req.NamespacedName, &eye); err != nil {
 		log.Error(err, "unable to fetch eye")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	url, err := r.GetSecret(ctx, eye.Spec.SecretRef.Name, &nn)
+	if err != nil {
+		r.Log.Error(err, "secret not found")
+	}
+	if url != nil {
+		r.HookURL = url
 	}
 
 	r.mu.RLock()
@@ -123,12 +124,12 @@ func (r *EyeReconciler) startSyncer(ctx context.Context, c client.Client, nn typ
 }
 
 // GetSecret ...
-func (r *EyeReconciler) GetSecret(ctx context.Context, nn *types.NamespacedName) (*url.URL, error) {
+func (r *EyeReconciler) GetSecret(ctx context.Context, name string, nn *types.NamespacedName) (*url.URL, error) {
 	secret := &corev1.Secret{}
 
 	// Copy types.NamedSpaces
 	nn2 := *nn
-	nn2.Name = "slack-url"
+	nn2.Name = name
 	if err := r.Client.Get(ctx, nn2, secret); err != nil {
 		return nil, err
 	}

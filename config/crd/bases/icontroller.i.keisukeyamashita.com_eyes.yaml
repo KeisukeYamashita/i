@@ -46,7 +46,6 @@ spec:
               type: object
           required:
           - lifetime
-          - secretRef
           type: object
         status:
           description: EyeStatus defines the observed state of Eye
