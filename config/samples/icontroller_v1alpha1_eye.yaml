@@ -4,4 +4,6 @@ metadata:
   name: eye-sample
 spec:
   # Add fields here
-  expiredAt: "2018-10-28"
+  lifetime: "10m"
+  secretRef:
+    name: "slack-1"

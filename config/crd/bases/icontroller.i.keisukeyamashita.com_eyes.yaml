@@ -32,12 +32,12 @@ spec:
         spec:
           description: EyeSpec defines the desired state of Eye
           properties:
-            expiredAt:
+            lifetime:
               description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
                 Important: Run "make" to regenerate code after modifying this file'
               type: string
           required:
-          - expiredAt
+          - lifetime
           type: object
         status:
           description: EyeStatus defines the observed state of Eye

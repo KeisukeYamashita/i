@@ -65,10 +65,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.EyeReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("Eye"),
-	}).SetupWithManager(mgr); err != nil {
+	r := controllers.NewEyeReconciler(
+		mgr.GetClient(),
+		ctrl.Log.WithName("controllers").WithName("Eye"),
+	)
+
+	if err = r.SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Eye")
 		os.Exit(1)
 	}

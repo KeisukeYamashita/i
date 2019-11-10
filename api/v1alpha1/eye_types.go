@@ -28,7 +28,13 @@ type EyeSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	// +kubebuilder:validation:Required
-	ExpireAt string `json:"expiredAt"`
+	Lifetime  string     `json:"lifetime"`
+	SecretRef *SecretRef `json:"secretRef"`
+}
+
+// SecretRef ...
+type SecretRef struct {
+	Name string `json:"name"`
 }
 
 // EyeStatus defines the observed state of Eye

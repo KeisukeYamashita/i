@@ -19,10 +19,9 @@ package controllers
 import (
 	"context"
 	"sync"
+	"time"
 
 	"github.com/go-logr/logr"
-	"github.com/k0kubun/pp"
-	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/record"
@@ -31,6 +30,8 @@ import (
 
 	"github.com/KeisukeYamashita/i/api/v1alpha1"
 	icontrollerv1alpha1 "github.com/KeisukeYamashita/i/api/v1alpha1"
+	"github.com/KeisukeYamashita/i/pkgs/clock"
+	"github.com/KeisukeYamashita/i/pkgs/logging"
 	"github.com/KeisukeYamashita/i/pkgs/syncers"
 )
 
@@ -43,11 +44,24 @@ type EyeReconciler struct {
 
 	syncers map[types.NamespacedName]syncers.Syncer
 	mu      sync.RWMutex
+	clock.Clock
+}
+
+// NewEyeReconciler ...
+func NewEyeReconciler(client client.Client, logger logr.Logger) *EyeReconciler {
+	clock := clock.NewClock(time.Now())
+	return &EyeReconciler{
+		Client:  client,
+		Log:     logger,
+		Clock:   clock,
+		syncers: make(map[types.NamespacedName]syncers.Syncer),
+	}
 }
 
 // +kubebuilder:rbac:groups=icontroller.i.keisukeyamashita.com,resources=eyes,verbs=get;list;watch;create;update;patchwatch;list
 // +kubebuilder:rbac:groups=icontroller.i.keisukeyamashita.com,resources=eyes/status,verbs=get;update;patch
 
+// Reconcile handles the control-loop for pods
 func (r *EyeReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	nn := req.NamespacedName
 	ctx := context.Background()
@@ -64,35 +78,35 @@ func (r *EyeReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	_, ok := r.syncers[nn]
 	r.mu.RUnlock()
 	if !ok {
-
-	}
-
-	if eye.Spec.ExpireAt == "" {
-		log.V(1).Info("not eye target")
-		return ctrl.Result{}, nil
-	}
-
-	eye2 := eye.DeepCopy()
-	eye2.Spec.ExpireAt = "hoho"
-
-	rs := &corev1.PodList{}
-	if err := r.List(ctx, rs); err != nil {
-		log.Error(err, "unable to fetch pods")
-		return ctrl.Result{}, nil
-	}
-
-	pp.Println(len(rs.Items))
-
-	if err := r.Update(ctx, eye2); err != nil {
-		log.Error(err, "unable to update eye")
+		ctx = logging.WithContext(ctx, log)
+		err := r.startSyncer(ctx, r.Client, nn, &eye)
+		return ctrl.Result{}, client.IgnoreNotFound((err))
 	}
 
 	log.V(0).Info("update eye resource")
 	return ctrl.Result{}, nil
 }
 
+// SetupWithManager ...
 func (r *EyeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&icontrollerv1alpha1.Eye{}).
 		Complete(r)
+}
+
+func (r *EyeReconciler) startSyncer(ctx context.Context, c client.Client, nn types.NamespacedName, eye *v1alpha1.Eye) error {
+	log := logging.FromContext(ctx)
+	log.V(1).Info("adding new syncer")
+	ctx, cancel := context.WithCancel(ctx)
+	s, err := syncers.NewSyncer(c, eye, r.Clock, cancel)
+	if err != nil {
+		return err
+	}
+	go s.Sync(ctx)
+	r.mu.Lock()
+	r.syncers[nn] = s
+	r.mu.Unlock()
+
+	log.V(1).Info("add new syncer")
+	return nil
 }
