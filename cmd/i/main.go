@@ -21,7 +21,7 @@ import (
 	"os"
 
 	icontrollerv1alpha1 "github.com/KeisukeYamashita/i/api/v1alpha1"
-	"github.com/KeisukeYamashita/i/pkgs/controllers"
+	"github.com/KeisukeYamashita/i/pkg/controller"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -65,9 +65,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	r := controllers.NewEyeReconciler(
+	r := controller.NewEyeReconciler(
 		mgr.GetClient(),
-		ctrl.Log.WithName("controllers").WithName("Eye"),
+		ctrl.Log.WithName("controller").WithName("Eye"),
 	)
 
 	if err = r.SetupWithManager(mgr); err != nil {

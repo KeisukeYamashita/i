@@ -8,7 +8,7 @@ import (
 	"net/url"
 
 	"github.com/KeisukeYamashita/i/api/v1alpha1"
-	"github.com/KeisukeYamashita/i/pkgs/pointer"
+	"github.com/KeisukeYamashita/i/pkg/pointer"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
