@@ -1,4 +1,4 @@
-package syncers
+package syncer
 
 import (
 	"context"
@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/KeisukeYamashita/i/api/v1alpha1"
-	"github.com/KeisukeYamashita/i/pkgs/clock"
-	"github.com/KeisukeYamashita/i/pkgs/logging"
-	"github.com/KeisukeYamashita/i/pkgs/slack"
+	"github.com/KeisukeYamashita/i/pkg/clock"
+	"github.com/KeisukeYamashita/i/pkg/logging"
+	"github.com/KeisukeYamashita/i/pkg/slack"
 	"golang.org/x/sync/errgroup"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"

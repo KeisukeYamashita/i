@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package controllers
+package controller
 
 import (
 	"context"
@@ -32,9 +32,8 @@ import (
 
 	"github.com/KeisukeYamashita/i/api/v1alpha1"
 	icontrollerv1alpha1 "github.com/KeisukeYamashita/i/api/v1alpha1"
-	"github.com/KeisukeYamashita/i/pkgs/clock"
-	"github.com/KeisukeYamashita/i/pkgs/logging"
-	"github.com/KeisukeYamashita/i/pkgs/syncers"
+	"github.com/KeisukeYamashita/i/pkg/clock"
+	"github.com/KeisukeYamashita/i/pkg/logging"
 )
 
 // EyeReconciler reconciles a Eye object
@@ -45,7 +44,7 @@ type EyeReconciler struct {
 	Recorder record.EventRecorder
 	HookURL  *url.URL
 
-	syncers map[types.NamespacedName]syncers.Syncer
+	syncers map[types.NamespacedName]syncer.Syncer
 	mu      sync.RWMutex
 	clock.Clock
 }
