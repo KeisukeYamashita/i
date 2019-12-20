@@ -32,7 +32,7 @@
 <p align="center"><a href="#" target="_blank" rel="noopener noreferrer"><img width="70%"src="./_image/design.gif" alt="eye"></a></p>
 <br />
 
-Here, I will explain the breif design.
+Here, I will explain the brief design.
 
 ### Architecture
 
