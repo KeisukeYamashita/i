@@ -34,6 +34,7 @@ import (
 	icontrollerv1alpha1 "github.com/KeisukeYamashita/i/api/v1alpha1"
 	"github.com/KeisukeYamashita/i/pkg/clock"
 	"github.com/KeisukeYamashita/i/pkg/logging"
+	"github.com/KeisukeYamashita/i/pkg/syncer"
 )
 
 // EyeReconciler reconciles a Eye object
