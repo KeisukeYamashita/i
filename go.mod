@@ -9,7 +9,7 @@ require (
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/go-logr/logr v0.1.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
-	github.com/onsi/ginkgo v1.11.0
+	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.8.1
 	github.com/prometheus/common v0.7.0
 	github.com/sirupsen/logrus v1.4.2 // indirect
