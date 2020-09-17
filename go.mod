@@ -12,9 +12,10 @@ require (
 	github.com/prometheus/common v0.9.1
 	go.etcd.io/etcd v3.3.18+incompatible
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
-	k8s.io/api v0.0.0-20190918155943-95b840bb6a1f
-	k8s.io/apimachinery v0.0.0-20190913080033-27d36303b655
+	k8s.io/api v0.18.6
+	k8s.io/apimachinery v0.18.6
 	k8s.io/client-go v11.0.1-0.20190409021438-1a26190bd76a+incompatible
-	sigs.k8s.io/controller-runtime v0.4.0
+	sigs.k8s.io/controller-runtime v0.6.3
 	sigs.k8s.io/controller-tools v0.2.1 // indirect
+	sigs.k8s.io/structured-merge-diff v0.0.0-20190525122527-15d366b2352e // indirect
 )
