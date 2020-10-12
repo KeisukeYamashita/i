@@ -7,7 +7,7 @@ require (
 	github.com/coreos/etcd v3.3.17+incompatible // indirect
 	github.com/go-logr/logr v0.1.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
-	github.com/onsi/ginkgo v1.14.1
+	github.com/onsi/ginkgo v1.14.2
 	github.com/onsi/gomega v1.10.1
 	github.com/prometheus/common v0.9.1
 	go.etcd.io/etcd v3.3.18+incompatible
