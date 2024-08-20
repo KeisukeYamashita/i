@@ -151,10 +151,6 @@ i is released under the Apache License 2.0.
 
 * [KeisukeYamashita](https://github.com/KeisukeYamashita)
 
-<br />
-<p align="center"><a href="#" target="_blank" rel="noopener noreferrer"><img width="100%"src="./_image/last_line.png" alt="last line"></a></p>
-<br />
-
 <!-- badge links -->
 
 [go]: https://golang.org/dl
