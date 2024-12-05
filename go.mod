@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d // indirect
 	github.com/coreos/etcd v3.3.17+incompatible // indirect
-	github.com/go-logr/logr v0.1.0
+	github.com/go-logr/logr v0.4.0
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.1
